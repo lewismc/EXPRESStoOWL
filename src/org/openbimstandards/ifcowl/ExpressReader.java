@@ -117,6 +117,7 @@ public class ExpressReader {
 					|| in.equalsIgnoreCase("IFC2X3_TC1")
 					|| in.equalsIgnoreCase("IFC4_ADD1")
 					|| in.equalsIgnoreCase("IFC4_ADD2")
+					|| in.equalsIgnoreCase("IFC4x1")
 					|| in.equalsIgnoreCase("IFC4")) {
 				try {
 					InputStream instr = ExpressReader.class
