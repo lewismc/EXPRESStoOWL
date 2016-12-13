@@ -27,13 +27,13 @@ import java.util.StringTokenizer;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.openbimstandards.ifcowl.vo.AttributeVO;
-import org.openbimstandards.ifcowl.vo.EntityVO;
-import org.openbimstandards.ifcowl.vo.InverseVO;
-import org.openbimstandards.ifcowl.vo.NamedIndividualVO;
-import org.openbimstandards.ifcowl.vo.PrimaryTypeVO;
-import org.openbimstandards.ifcowl.vo.PropertyVO;
-import org.openbimstandards.ifcowl.vo.TypeVO;
+import org.buildingsmart.vo.AttributeVO;
+import org.buildingsmart.vo.EntityVO;
+import org.buildingsmart.vo.InverseVO;
+import org.buildingsmart.vo.NamedIndividualVO;
+import org.buildingsmart.vo.PrimaryTypeVO;
+import org.buildingsmart.vo.PropertyVO;
+import org.buildingsmart.vo.TypeVO;
 
 import fi.ni.rdf.Namespace;
 
