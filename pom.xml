@@ -11,7 +11,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.pipauwel</groupId>
   <artifactId>EXPRESStoOWL</artifactId>
-  <name>IFC Parser Library</name>
+  <name>EXPRESS to OWL</name>
   <packaging>jar</packaging>
   <version>0.1-SNAPSHOT</version>
   <licenses>
