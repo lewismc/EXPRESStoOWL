@@ -58,15 +58,15 @@ public class OWLWriter {
 
     private String expressSchemaName;
 
-    private Map<String, EntityVO> entities = new HashMap<String, EntityVO>();
-    private Map<String, PropertyVO> properties = new HashMap<String, PropertyVO>();
-    private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
-    private Map<String, Set<String>> siblings = new HashMap<String, Set<String>>();
-    private List<NamedIndividualVO> enumIndividuals = new ArrayList<NamedIndividualVO>();
-    private List<String> listPropertiesOutput = new ArrayList<String>();
+    private Map<String, EntityVO> entities = new HashMap<>();
+    private Map<String, PropertyVO> properties = new HashMap<>();
+    private Map<String, TypeVO> types = new HashMap<>();
+    private Map<String, Set<String>> siblings = new HashMap<>();
+    private List<NamedIndividualVO> enumIndividuals = new ArrayList<>();
+    private List<String> listPropertiesOutput = new ArrayList<>();
 
     public OWLWriter() {
-        // UNUSED
+        // default constructor
     }
 
     public OWLWriter(String expressSchemaName, Map<String, EntityVO> entities, Map<String, TypeVO> types, Map<String, Set<String>> siblings, List<NamedIndividualVO> enumIndividuals,
@@ -87,12 +87,10 @@ public class OWLWriter {
             out.write("@prefix ifc: <" + Namespace.IFC + "#> .\r\n");
             out.write(getOwl_header());
 
-            // writePrimaryTypes(out);
             writeNamedIndividuals(out);
-            // writeHelperClasses(out);
 
-            Iterator<Entry<String, TypeVO>> it_type = types.entrySet().iterator();
-            writeTypesToOWL(it_type, out);
+            Iterator<Entry<String, TypeVO>> itType = types.entrySet().iterator();
+            writeTypesToOWL(itType, out);
 
             Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
             writeEntitiesToOWL(it, out);
@@ -115,7 +113,7 @@ public class OWLWriter {
             out.write("@base <" + Namespace.EXPRESS + "> .\r\n");
             out.write("@prefix : <" + Namespace.EXPRESS + "#> .\r\n");
             out.write("@prefix expr: <" + Namespace.EXPRESS + "#> .\r\n");
-            out.write(getExpressOwl_header());
+            out.write(getExpressOwlHeader());
 
             writePrimaryTypes(out);
             writeHelperClasses(out);
@@ -714,8 +712,6 @@ public class OWLWriter {
         out.write("ifc:" + tvo.getName() + "\r\n");
         out.write("\trdf:type owl:Class ;" + "\r\n");
         if (tvo.getParentSelectTypes() != null) {
-            // System.out.println("Warning: Enum underneath Select : " +
-            // tvo.getName());
             out.write("\trdfs:subClassOf");
             for (int i = 0; i < tvo.getParentSelectTypes().size(); i++) {
                 if (i != tvo.getParentSelectTypes().size() - 1)
@@ -732,11 +728,11 @@ public class OWLWriter {
             out.write("\t\t\trdf:type owl:Class ;" + "\r\n");
             out.write("\t\t\towl:oneOf " + "\r\n");
             out.write("\t\t\t\t( " + "\r\n");
-            for (int i = 0; i < tvo.getEnum_entities().size(); i++) {
-                if (i != tvo.getEnum_entities().size() - 1)
-                    out.write("\t\t\t\t\tifc:" + getNamedIndividual(tvo.getEnum_entities().get(i), tvo.getName()).getNamedIndividual() + " " + "\r\n");
+            for (int i = 0; i < tvo.getEnumEntities().size(); i++) {
+                if (i != tvo.getEnumEntities().size() - 1)
+                    out.write("\t\t\t\t\tifc:" + getNamedIndividual(tvo.getEnumEntities().get(i), tvo.getName()).getNamedIndividual() + " " + "\r\n");
                 else
-                    out.write("\t\t\t\t\tifc:" + getNamedIndividual(tvo.getEnum_entities().get(i), tvo.getName()).getNamedIndividual() + "\r\n");
+                    out.write("\t\t\t\t\tifc:" + getNamedIndividual(tvo.getEnumEntities().get(i), tvo.getName()).getNamedIndividual() + "\r\n");
             }
             out.write("\t\t\t\t) " + "\r\n");
             out.write("\t\t] ; " + "\r\n");
@@ -764,7 +760,7 @@ public class OWLWriter {
             out.write("\t\t\trdf:type owl:Class ;" + "\r\n");
             out.write("\t\t\towl:unionOf " + "\r\n");
             out.write("\t\t\t\t( " + "\r\n");
-            List<String> selects = tvo.getSelect_entities();
+            List<String> selects = tvo.getSelectEntities();
             for (int i = 0; i < selects.size(); i++) {
                 out.write("\t\t\t\t\tifc:" + selects.get(i) + " " + "\r\n");
             }
@@ -827,7 +823,7 @@ public class OWLWriter {
 
         out.write("." + "\r\n\r\n");
 
-        if (ns.equalsIgnoreCase("ifc")) {
+        if ("ifc".equalsIgnoreCase(ns)) {
             if (!listPropertiesOutput.contains(content)) {
                 // property already contained in resulting OWL file
                 // (.TTL) -> no need to write additional property
@@ -914,7 +910,7 @@ public class OWLWriter {
 
         out.write("." + "\r\n\r\n");
 
-        if (ns.equalsIgnoreCase("ifc")) {
+        if ("ifc".equalsIgnoreCase(ns)) {
 
             if (!listPropertiesOutput.contains(content)) {
                 // property already contained in resulting OWL file
@@ -1110,7 +1106,7 @@ public class OWLWriter {
         return s;
     }
 
-    private String getExpressOwl_header() {
+    private String getExpressOwlHeader() {
         String s = "";
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
@@ -1372,277 +1368,32 @@ public class OWLWriter {
 
     @SuppressWarnings("unused")
     private void writeExtraCardinalityRestrictionsForListOfList(AttributeVO attr, BufferedWriter out) throws IOException {
-        if (attr.getMinCard_listoflist() == -1 && attr.getMaxCard_listoflist() == -1) {
+        if (attr.getMinCardListOfList() == -1 && attr.getMaxCardListOfList() == -1) {
             System.out.println("WARNING: [?,?] found for : " + attr.getLowerCaseName() + " - " + attr.getType().getName());
-        } else if (attr.getMinCard_listoflist() == -1 && attr.getMaxCard_listoflist() != -1) {
+        } else if (attr.getMinCardListOfList() == -1 && attr.getMaxCardListOfList() != -1) {
             // [?:2]
             // This is not supposed to happen
             System.out.println("WARNING - IMPOSSIBLE: found 'unlimited' mincardinality restriction combined with a bounded maxcardinality restriction for :" + attr.getLowerCaseName());
-        } else if (attr.getMinCard_listoflist() != -1 && attr.getMaxCard_listoflist() == -1) {
-            int start = attr.getMinCard_listoflist();
+        } else if (attr.getMinCardListOfList() != -1 && attr.getMaxCardListOfList() == -1) {
+            int start = attr.getMinCardListOfList();
             // [2:?]
             if (start > 1) {
-                // REMARK: below is an old option, but it can not be used in the
-                // current setup
-
-                // out.write(" ;\r\n");
-                // out.write("\trdfs:subClassOf" + "\r\n");
-                // out.write("\t\t[" + "\r\n");
-                // out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                // out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-                // + " ; \r\n");
-                // out.write("\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                // out.write("\t\t\t\t\towl:onProperty ifc:hasListContent ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\t\t\trdf:type owl:Restriction ; " +
-                // "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:onClass ifc:"
-                // + attr.getType().getName() + "_List ; " + "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:minQualifiedCardinality \""
-                // + (start - 1) + "\"^^xsd:nonNegativeInteger " + "\r\n");
-                // out.write("\t\t\t\t\t\t]" + "\r\n");
-                // out.write("\t\t\t\t]" + "\r\n");
-                // out.write("\t\t]");
-
-                // out.write(" ;\r\n");
-                // out.write("\trdfs:subClassOf" + "\r\n");
-                // out.write("\t\t[" + "\r\n");
-                // out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                // out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-                // + " ; \r\n");
-                // out.write("\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                // out.write("\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\t\t\trdf:type owl:Restriction ; " +
-                // "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:onProperty ifc:hasListContent ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t\trdf:type owl:Restriction ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t\towl:onClass ifc:"
-                // + attr.getType().getName() + "_List ; " + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t\towl:minQualifiedCardinality \""
-                // + (start - 1) + "\"^^xsd:nonNegativeInteger " + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t]" + "\r\n");
-                // out.write("\t\t\t\t\t\t]" + "\r\n");
-                // out.write("\t\t\t\t]" + "\r\n");
-                // out.write("\t\t]");
+                // do nothing
             }
         } else {
-            int start = attr.getMinCard_listoflist();
-            int end = attr.getMaxCard_listoflist();
+            int start = attr.getMinCardListOfList();
+            int end = attr.getMaxCardListOfList();
             if (start == end && end > 1) {
-                // REMARK: below is an old option, but it can not be used in the
-                // current setup
-
-                // [3:3]
-                // explicitly qualified cardinality
-                // out.write(" ;\r\n");
-                // out.write("\trdfs:subClassOf" + "\r\n");
-                // out.write("\t\t[" + "\r\n");
-                // out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                // out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-                // + " ; \r\n");
-                // out.write("\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                // out.write("\t\t\t\t\towl:onProperty ifc:hasListContent ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\t\t\trdf:type owl:Restriction ; " +
-                // "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:onClass ifc:"
-                // + attr.getType().getName() + "_List ; " + "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:qualifiedCardinality \""
-                // + (start - 1) + "\"^^xsd:nonNegativeInteger " + "\r\n");
-                // out.write("\t\t\t\t\t\t]" + "\r\n");
-                // out.write("\t\t\t\t]" + "\r\n");
-                // out.write("\t\t]");
-                //
-                // out.write(" ;\r\n");
-                // out.write("\trdfs:subClassOf" + "\r\n");
-                // out.write("\t\t[" + "\r\n");
-                // out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                // out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-                // + " ; \r\n");
-                // out.write("\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                // out.write("\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\t\t\trdf:type owl:Restriction ; " +
-                // "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:onProperty ifc:hasListContent ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t[" + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t\trdf:type owl:Restriction ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                // + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t\towl:onClass ifc:"
-                // + attr.getType().getName() + "_List ; " + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t\towl:qualifiedCardinality \""
-                // + (start - 1) + "\"^^xsd:nonNegativeInteger " + "\r\n");
-                // out.write("\t\t\t\t\t\t\t\t]" + "\r\n");
-                // out.write("\t\t\t\t\t\t]" + "\r\n");
-                // out.write("\t\t\t\t]" + "\r\n");
-                // out.write("\t\t]");
+                // do nothing
             } else if (start < end) {
                 // [1:2]
                 // min-max qualified cardinality
 
                 if (end > 1) {
-                    // REMARK: below is an old option, but it can not be used in
-                    // the current setup
-
-                    // out.write(" ;\r\n");
-                    // out.write("\trdfs:subClassOf" + "\r\n");
-                    // out.write("\t\t[" + "\r\n");
-                    // out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                    // out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-                    // + " ; \r\n");
-                    // out.write("\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\trdf:type owl:Restriction ; " +
-                    // "\r\n");
-                    // out.write("\t\t\t\t\towl:onProperty ifc:hasListContent ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\t\t\trdf:type owl:Restriction ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:onClass ifc:"
-                    // + attr.getType().getName() + "_List ; " + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:maxQualifiedCardinality \""
-                    // + (end - 1) + "\"^^xsd:nonNegativeInteger "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t]");
-                    //
-                    // out.write(" ;\r\n");
-                    // out.write("\trdfs:subClassOf" + "\r\n");
-                    // out.write("\t\t[" + "\r\n");
-                    // out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                    // out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-                    // + " ; \r\n");
-                    // out.write("\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\trdf:type owl:Restriction ; " +
-                    // "\r\n");
-                    // out.write("\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\t\t\trdf:type owl:Restriction ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:onProperty ifc:hasListContent ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t\trdf:type owl:Restriction ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t\towl:onClass ifc:"
-                    // + attr.getType().getName() + "_List ; " + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t\towl:maxQualifiedCardinality \""
-                    // + (end - 1)
-                    // + "\"^^xsd:nonNegativeInteger "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t]");
-
+                    // do nothing
                 }
                 if (start > 1) {
-                    // REMARK: below is an old option, but it can not be used in
-                    // the current setup
-
-                    // out.write(" ;\r\n");
-                    // out.write("\trdfs:subClassOf" + "\r\n");
-                    // out.write("\t\t[" + "\r\n");
-                    // out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                    // out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-                    // + " ; \r\n");
-                    // out.write("\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\trdf:type owl:Restriction ; " +
-                    // "\r\n");
-                    // out.write("\t\t\t\t\towl:onProperty ifc:hasListContent ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\t\t\trdf:type owl:Restriction ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:onClass ifc:"
-                    // + attr.getType().getName() + "_List ; " + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:minQualifiedCardinality \""
-                    // + (start - 1) + "\"^^xsd:nonNegativeInteger "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t]");
-                    //
-                    // out.write(" ;\r\n");
-                    // out.write("\trdfs:subClassOf" + "\r\n");
-                    // out.write("\t\t[" + "\r\n");
-                    // out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-                    // out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-                    // + " ; \r\n");
-                    // out.write("\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\trdf:type owl:Restriction ; " +
-                    // "\r\n");
-                    // out.write("\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\t\t\trdf:type owl:Restriction ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:onProperty ifc:hasListContent ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\towl:allValuesFrom" + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t[" + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t\trdf:type owl:Restriction ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t\towl:onProperty ifc:isFollowedBy ; "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t\towl:onClass ifc:"
-                    // + attr.getType().getName() + "_List ; " + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t\towl:minQualifiedCardinality \""
-                    // + (start - 1)
-                    // + "\"^^xsd:nonNegativeInteger "
-                    // + "\r\n");
-                    // out.write("\t\t\t\t\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t\t\t]" + "\r\n");
-                    // out.write("\t\t]");
+                    // do nothing
                 }
             } else {
                 // This is not supposed to happen
