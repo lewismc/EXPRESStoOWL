@@ -11,7 +11,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.pipauwel</groupId>
   <artifactId>EXPRESStoOWL</artifactId>
-  <name>IFC Parser Library</name>
+  <name>EXPRESS to OWL</name>
   <packaging>jar</packaging>
   <version>0.1-SNAPSHOT</version>
   <licenses>
@@ -23,8 +23,7 @@
 
   <url>https://github.com/pipauwel/EXPRESStoOWL</url>
 
-  <description>IFCtoRDF is a set of reusable Java components that implement 
-	functionality for parsing RDF files.
+  <description>EXPRESStoOWL is a set of reusable Java components that allows to parse EXPRESS files and convert them into OWL ontologies in the context of the Industry Foundation Classes (IFC).
 	</description>
 
   <scm>
@@ -59,6 +58,12 @@
       <id>pipauwel</id>
       <name>Pieter Pauwels</name>
       <email>pipauwel [dot] pauwels [at] ugent [dot] be</email>
+    </developer>
+	
+    <developer>
+      <id>jyrkio</id>
+      <name>Jyrki Oraskari</name>
+      <email>jyrki [dot] oraskari [at] aalto [dot] fi</email>
     </developer>
 
     <developer>

@@ -47,28 +47,22 @@ import fi.ni.rdf.Namespace;
  *  - readAndBuild() - parses the file and builds up all data required to write an OWL file or convert an IFC file to RDF
  *  - getEntities() - gives map of Entities in IFC
  *  - getTypes()    - gives map of Types in IFC
- *   
- * @author Jyrki Oraskari
- * @author of modifications Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  */
 
 /*
- * The GNU Affero General Public License
+ * Copyright 2016 Pieter Pauwels, Ghent University; Jyrki Oraskari, Aalto University; Lewis John McGibbney, Apache
  * 
- * Copyright (c) 2014 Jyrki Oraskari (original)
- * Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ExpressReader {
@@ -165,6 +159,7 @@ public class ExpressReader {
 					|| in.equalsIgnoreCase("IFC2X3_TC1")
 					|| in.equalsIgnoreCase("IFC4_ADD1")
 					|| in.equalsIgnoreCase("IFC4_ADD2")
+					|| in.equalsIgnoreCase("IFC4x1")
 					|| in.equalsIgnoreCase("IFC4")) {
 				try {
 					InputStream instr = ExpressReader.class
